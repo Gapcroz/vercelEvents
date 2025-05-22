@@ -63,7 +63,7 @@
 
 <!-- content -->
 <main class="container">
-  <h1 class=" text-center text-4xl bg-ColorPrincipal">Eventos de Emprendimiento</h1>
+  <h1 class="text-center text-3xl border text-emerald-800 mb-10 pb-10 bg-red-50">Eventos de Emprendimiento</h1>
   <div class="filters">
     <input 
       type="text" 
