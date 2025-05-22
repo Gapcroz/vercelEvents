@@ -61,9 +61,9 @@
   });
 </script>
 
+<!-- content -->
 <main class="container">
-  <h1>Eventos de Emprendimiento</h1>
-  
+  <h1 class=" text-center text-4xl bg-ColorPrincipal">Eventos de Emprendimiento</h1>
   <div class="filters">
     <input 
       type="text" 
@@ -133,11 +133,6 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
   }
   
   .filters {
