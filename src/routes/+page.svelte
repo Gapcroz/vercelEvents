@@ -110,19 +110,25 @@
   {:else}
     <div class="events-grid">
       {#each events as event}
-        <div class="event-card">
-          <h2>{event.title}</h2>
-          <p class="description">{event.description}</p>
-          <div class="event-details">
-            <p><strong>Fecha:</strong> {event.start ? new Date(event.start).toLocaleString() : 'Sin especificar'}</p>
-            <p><strong>Lugar:</strong> {event.location ? `${event.location[1]}, ${event.location[0]}` : 'Sin especificar'}</p>
-            <p><strong>Categoría:</strong> {'Sin especificar'}</p>
-            <div class="ranks">
-              <span class="rank">PHQ: {event.phq_rank}</span>
-              <span class="rank">Local: {event.local_rank}</span>
-            </div>
+      <div class="event-card">
+        <h2>{event.title}</h2>
+        <p class="description">{event.description}</p>
+        <div class="event-details">
+          <p><strong>ID:</strong> {event.id}</p>
+          <p><strong>Fecha inicio:</strong> {event.start ? new Date(event.start).toLocaleString() : 'Sin especificar'}</p>
+          <p><strong>Fecha fin:</strong> {event.end ? new Date(event.end).toLocaleString() : 'Sin especificar'}</p>
+          <p><strong>Zona horaria:</strong> {event.timezone || 'Sin especificar'}</p>
+          <p><strong>Ubicación:</strong> {event.location ? `${event.location[1]}, ${event.location[0]}` : 'Sin ubicación'}</p>
+          <p><strong>Categoría:</strong> {event.category || 'Sin especificar'}</p>
+          <p><strong>País:</strong> {event.country || 'Desconocido'}</p>
+          <p><strong>Estado:</strong> {event.state || 'Desconocido'}</p>
+          <div class="ranks">
+            <span class="rank">PHQ: {event.phq_rank}</span>
+            <span class="rank">Local: {event.local_rank}</span>
           </div>
         </div>
+      </div>
+      
       {/each}
     </div>
   {/if}
