@@ -43,20 +43,20 @@
   }
   
   onMount(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          userLat = pos.coords.latitude;
-          userLng = pos.coords.longitude;
-          fetchEvents();
-        },
-        () => {
-          // Si el usuario no da permiso, igual cargamos sin lat/lng
-          fetchEvents();
-        }
-      );
-    } else {
-      fetchEvents();
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+        fetchEvents(); // ✅ Aquí sí se cargan los eventos con coordenadas
+      },
+      (error) => {
+        console.warn("Usuario rechazó compartir ubicación:", error);
+        fetchEvents(); // Aun si no acepta, mostramos algo
+      }
+    );
+  } else {
+    fetchEvents(); // Navegador no soporta geolocalización
     }
   });
 </script>
@@ -114,18 +114,20 @@
         <h2>{event.title}</h2>
         <p class="description">{event.description}</p>
         <div class="event-details">
-          <p><strong>ID:</strong> {event.id}</p>
           <p><strong>Fecha inicio:</strong> {event.start ? new Date(event.start).toLocaleString() : 'Sin especificar'}</p>
           <p><strong>Fecha fin:</strong> {event.end ? new Date(event.end).toLocaleString() : 'Sin especificar'}</p>
           <p><strong>Zona horaria:</strong> {event.timezone || 'Sin especificar'}</p>
-          <p><strong>Ubicación:</strong> {event.location ? `${event.location[1]}, ${event.location[0]}` : 'Sin ubicación'}</p>
+          <p><strong>Ubicación:</strong>
+            {#if event.city || event.region || event.country_name}
+              {event.city || 'Ciudad desconocida'},
+              {event.region || 'Estado'}, 
+              {event.country_name || 'País'}
+            {:else}
+              Coordenadas: {event.location ? `${event.location[1]}, ${event.location[0]}` : 'Sin datos'}
+            {/if}
+          </p>
           <p><strong>Categoría:</strong> {event.category || 'Sin especificar'}</p>
-          <p><strong>País:</strong> {event.country || 'Desconocido'}</p>
           <p><strong>Estado:</strong> {event.state || 'Desconocido'}</p>
-          <div class="ranks">
-            <span class="rank">PHQ: {event.phq_rank}</span>
-            <span class="rank">Local: {event.local_rank}</span>
-          </div>
         </div>
       </div>
       
