@@ -65,7 +65,11 @@
       if (!response.ok) throw new Error('Error al cargar los eventos');
 
       const nuevosEventos = await response.json();
-      events = combinarSinDuplicados(events, nuevosEventos);
+      events = nuevosEventos;
+
+      // Guardar en sessionStorage
+      sessionStorage.setItem("cachedEvents", JSON.stringify(nuevosEventos));
+      console.log("✅ Eventos guardados en sessionStorage");
     } catch (e) {
       error = e.message;
     } finally {
@@ -143,6 +147,15 @@
       on:click={fetchEvents}
     >
       Buscar
+    </button>
+    <button
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
+      on:click={() => {
+        sessionStorage.removeItem("cachedEvents");
+        fetchEvents();
+      }}
+    >
+      🔄 Refrescar eventos
     </button>
   </div>
 
