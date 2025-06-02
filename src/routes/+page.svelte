@@ -73,38 +73,36 @@
     }
   }
 
-  onMount(async () => {
-  // load local events
-  try {
-    const localRes = await fetch(ENDPOINTS.EVENTS);
-    if (localRes.ok) {
-      events = await localRes.json();
+  onMount(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          await fetchEvents(); // ✅ call once
+        },
+        async (err) => {
+          console.warn("⚠️ No se pudo obtener ubicación del usuario:", err.message);
+          await fetchEvents(); // ✅ Fallback without location
+        }
+      );
+    } else {
+      // No se soporta geolocalización
+      fetchEvents(); // ✅ Llamada única sin ubicación
     }
-  } catch (err) {
-    console.warn("⚠️ No se pudieron cargar eventos locales");
-  }
 
-  // load user location events
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        userLat = pos.coords.latitude;
-        userLng = pos.coords.longitude;
-        await fetchEvents();
+    // Carga categorías (esto no cambia)
+    (async () => {
+      try {
+        const res = await fetch(ENDPOINTS.CATEGORIES);
+        if (res.ok) {
+          categories = await res.json();
+        }
+      } catch (err) {
+        console.error("❌ Error cargando categorías:", err);
       }
-    );
-  }
-
-  // load categories
-  try {
-    const res = await fetch(ENDPOINTS.CATEGORIES);
-    if (res.ok) {
-      categories = await res.json();
-    }
-  } catch (err) {
-    console.error("❌ Error cargando categorías:", err);
-  }
-});
+    })();
+  });
 
 </script>
 
