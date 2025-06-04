@@ -185,6 +185,8 @@
             <p><strong>Ubicación:</strong> {event.city || 'Ciudad desconocida'}, {event.region || 'Estado'}, {event.country_name || 'País'}</p>
             <p><strong>Categoría:</strong> {event.category || 'N/A'}</p>
             <p><strong>Estado:</strong> {event.state || 'Desconocido'}</p>
+            <p><strong>Fuente:</strong> {event.source}</p>
+
           </div>
         </div>
       {/each}
