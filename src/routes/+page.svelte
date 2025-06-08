@@ -1,6 +1,11 @@
 <script>
   import { onMount } from 'svelte';
   import { ENDPOINTS } from '$lib/config';
+  import { createEvent } from '$lib/createEventAPI.js';
+  import EventForm from '$components/EventForm.svelte';
+
+
+
 
   let events = [];
   let loading = true;
@@ -13,6 +18,7 @@
   let userLat = null;
   let userLng = null;
   let categories = [];
+  let mostrarModal = false;
 
   // Evento final filtrado (reactivo)
   $: filteredEvents = events.filter(event => {
@@ -156,6 +162,29 @@
     >
       🔄 Refrescar eventos
     </button>
+
+    <!-- Botón para abrir el modal -->
+    <button
+    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
+    on:click={() => (mostrarModal = true)}
+    >
+    ➕ Agregar nuevo evento
+    </button>
+
+    <!-- Modal -->
+    {#if mostrarModal}
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-30 backdrop-blur-sm">
+      <div class="bg-white p-6 rounded shadow-lg max-w-lg w-full relative">
+        <button
+          class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-xl font-bold"
+          on:click={() => (mostrarModal = false)}
+        >
+          ✖
+        </button>
+        <EventForm on:close={() => (mostrarModal = false)} />
+      </div>
+    </div>
+    {/if}
   </div>
 
   {#if loading}
@@ -179,8 +208,14 @@
           <h2 class="text-xl font-semibold mb-2">{event.title}</h2>
           <p class="text-sm text-gray-700 mb-2">{event.description}</p>
           <div class="text-sm space-y-1">
-            <p><strong>Inicio:</strong> {new Date(event.start).toLocaleString()}</p>
-            <p><strong>Fin:</strong> {new Date(event.end).toLocaleString()}</p>
+            <p><strong>Inicio:</strong>
+              {event.source === 'eventbrite'
+                ? new Date(event.start).toLocaleDateString()
+                : new Date(event.start).toLocaleString()}
+            </p>
+            {#if event.end}
+              <p><strong>Fin:</strong> {new Date(event.end).toLocaleString()}</p>
+            {/if}
             <p><strong>Zona horaria:</strong> {event.timezone}</p>
             <p><strong>Ubicación:</strong> {event.city || 'Ciudad desconocida'}, {event.region || 'Estado'}, {event.country_name || 'País'}</p>
             <p><strong>Categoría:</strong> {event.category || 'N/A'}</p>
