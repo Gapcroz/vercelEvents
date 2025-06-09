@@ -213,7 +213,7 @@
                 ? new Date(event.start).toLocaleDateString()
                 : new Date(event.start).toLocaleString()}
             </p>
-            {#if event.end}
+            {#if event.source !== 'eventbrite'}
               <p><strong>Fin:</strong> {new Date(event.end).toLocaleString()}</p>
             {/if}
             <p><strong>Zona horaria:</strong> {event.timezone}</p>
@@ -221,6 +221,14 @@
             <p><strong>Categoría:</strong> {event.category || 'N/A'}</p>
             <p><strong>Estado:</strong> {event.state || 'Desconocido'}</p>
             <p><strong>Fuente:</strong> {event.source}</p>
+            {#if event.source === 'eventbrite' && event.url}
+              <p>
+                <strong>Enlace:</strong>
+                <a href={event.url} target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">
+                  Ver en Eventbrite
+                </a>
+              </p>
+            {/if}
 
           </div>
         </div>
