@@ -52,34 +52,42 @@
   }
 
   async function fetchEvents() {
-  try {
-    loading = true;
-    error = null;
+    try {
+      loading = true;
+      error = null;
 
-    const params = new URLSearchParams();
-    if (searchTerm) params.append('q', searchTerm);
-    if (selectedCategory) params.append('category', selectedCategory);
-    if (startDate) params.append('start', startDate);
-    if (endDate) params.append('end', endDate);
-    if (userLat && userLng) {
-      params.append('lat', userLat);
-      params.append('lng', userLng);
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('q', searchTerm);
+      if (selectedCategory) params.append('category', selectedCategory);
+      if (startDate) params.append('start', startDate);
+      if (endDate) params.append('end', endDate);
+      if (userLat && userLng) {
+        params.append('lat', userLat);
+        params.append('lng', userLng);
+      }
+
+      const [resExternos, resLocales] = await Promise.all([
+        fetch(`${ENDPOINTS.EVENTS}?${params.toString()}`),
+        fetch(ENDPOINTS.EVENTS_LOCAL),
+      ]);
+
+      if (!resExternos.ok || !resLocales.ok) throw new Error("Error al cargar eventos");
+
+      const eventosExternos = await resExternos.json();
+      const eventosLocales = await resLocales.json();
+
+      events = combinarSinDuplicados(eventosExternos, eventosLocales)
+  .sort((a, b) => new Date(a.start) - new Date(b.start));
+
+      sessionStorage.setItem("cachedEvents", JSON.stringify(events));
+      console.log("✅ Eventos guardados en sessionStorage");
+    } catch (e) {
+      error = e.message;
+    } finally {
+      loading = false;
     }
-
-    const response = await fetch(`${ENDPOINTS.EVENTS}?${params.toString()}`);
-    if (!response.ok) throw new Error('Error al cargar los eventos');
-
-    const nuevosEventos = await response.json();
-    events = nuevosEventos;
-
-    sessionStorage.setItem("cachedEvents", JSON.stringify(nuevosEventos));
-    console.log("✅ Eventos guardados en sessionStorage");
-  } catch (e) {
-    error = e.message;
-  } finally {
-    loading = false;
   }
-}
+
 
 
   onMount(() => {

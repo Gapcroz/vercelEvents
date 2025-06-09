@@ -1,7 +1,7 @@
 import { ENDPOINTS } from "./config";
 
 export async function createEvent(data) {
-  const response = await fetch(ENDPOINTS.EVENTS, {
+  const response = await fetch(ENDPOINTS.CRUD_EVENTS, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
